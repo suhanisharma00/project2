@@ -29,7 +29,7 @@ class LibraryBooksPage extends StatelessWidget {
         child: Column(
           children: [
 
-            /// ================= FILTER CARD =================
+            /// FILTER CARD
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'app_drawer.dart';
 
 class ClassManagementPage extends StatelessWidget {
+  const ClassManagementPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

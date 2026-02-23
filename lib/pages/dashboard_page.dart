@@ -1,4 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:project2/pages/%C2%A0MyRegisteredEvents.dart';
+import 'package:project2/pages/salarybankdetails.dart';
+import 'package:project2/pages/studymaterial.dart';
+import 'package:project2/pages/yoursupportticket.dart';
+import 'AssignedTickets.dart';
+import 'ExploreEvents.dart';
+import 'assigment.dart';
+import 'createnewsupportticket.dart';
+import 'examlist.dart';
+import 'librarybookpage.dart';
+import 'newclassschedule.dart';
 import 'virtual_id_card_page.dart';
 import 'quick_actions_page.dart';
 import 'profile_page.dart';
@@ -10,13 +21,14 @@ import 'classmanagement.dart';
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
-  
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  bool isLibraryExpanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -74,8 +86,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         width: MediaQuery.of(context).size.width * 0.75,
         child: Drawer(
           backgroundColor: const Color(0xFF2C3E50),
-          child: Column(
+          child: ListView(
             children: [
+
               const SizedBox(height: 40),
               const ListTile(
                 leading: CircleAvatar(
@@ -111,47 +124,416 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(builder: (_) => ClassManagementPage()));
-                  }),
-              buildDrawerItem(
-                  icon: Icons.calendar_month,
-                  title: "Schedules",
-                  context: context,
-                  onTap: () {}),
+                  }
+                  ),
+              /// =======================
+              /// "Schedules" Dropdown
+              /// =======================
+              Theme(
+                data: Theme.of(context).copyWith(
+                  dividerColor: Colors.transparent,
+                ),
+                child: ExpansionTile(
+                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  title: const Text(
+                    "Schedules",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  trailing: Icon(
+                    isLibraryExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ),
+                  initiallyExpanded: isLibraryExpanded,
+                  onExpansionChanged: (value) {
+                    setState(() {
+                      isLibraryExpanded = value;
+                    });
+                  },
+                  children: [
+
+                    /// "All Schedules"
+                    ListTile(
+                      leading: const Icon(Icons.book, color: Colors.white70),
+                      title: const Text(
+                        "All Schedules",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ViewClassSchedulePage()),
+                        );
+                      },
+                    ),
+
+                    /// "My Schedules"
+                    ListTile(
+                      leading: const Icon(Icons.menu_book_outlined,
+                          color: Colors.white70),
+                      title: const Text(
+                        "My Schedules",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const LibraryBooksPage()), // change if different page
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
               buildDrawerItem(
                   icon: Icons.school,
                   title: "Student Leave",
                   context: context,
-                  onTap: () {}),
-              buildDrawerItem(
-                  icon: Icons.menu_book,
-                  title: "Library Resources",
-                  context: context,
-                  onTap: () {}),
-              buildDrawerItem(
-                  icon: Icons.edit_document,
-                  title: "Exams",
-                  context: context,
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => ScheduleClassPage()));
+                  }
+              ),
+
+              Theme(
+                data: Theme.of(context).copyWith(
+                  dividerColor: Colors.transparent,
+                ),
+                child: ExpansionTile(
+                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  title: const Text(
+                    "Library Resources",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  trailing: Icon(
+                    isLibraryExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ),
+                  initiallyExpanded: isLibraryExpanded,
+                  onExpansionChanged: (value) {
+                    setState(() {
+                      isLibraryExpanded = value;
+                    });
+                  },
+                  children: [
+
+                    /// 🔹 Available Books
+                    ListTile(
+                      leading: const Icon(Icons.book, color: Colors.white70),
+                      title: const Text(
+                        "Available Books",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const LibraryBooksPage()),
+                        );
+                      },
+                    ),
+
+                    /// Lending Books
+                    ListTile(
+                      leading: const Icon(Icons.menu_book_outlined,
+                          color: Colors.white70),
+                      title: const Text(
+                        "Lending Books",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const LibraryBooksPage()), // change if different page
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              /// =======================
+              /// Exam Dropdown
+              /// =======================
+              Theme(
+                data: Theme.of(context).copyWith(
+                  dividerColor: Colors.transparent,
+                ),
+                child: ExpansionTile(
+                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  title: const Text(
+                    "Exam",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  trailing: Icon(
+                    isLibraryExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ),
+                  initiallyExpanded: isLibraryExpanded,
+                  onExpansionChanged: (value) {
+                    setState(() {
+                      isLibraryExpanded = value;
+                    });
+                  },
+                  children: [
+
+                    /// Exam information
+                    ListTile(
+                      leading: const Icon(Icons.book, color: Colors.white70),
+                      title: const Text(
+                        "Exam Information",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ExamListPage()),
+                        );
+                      },
+                    ),
+
+                    /// Mark entry
+                    ListTile(
+                      leading: const Icon(Icons.menu_book_outlined,
+                          color: Colors.white70),
+                      title: const Text(
+                        "Mark Entry",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const Assigments()), // change if different page
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
               buildDrawerItem(
                   icon: Icons.account_balance_wallet,
                   title: "Salary Info",
                   context: context,
-                  onTap: () {}),
-              buildDrawerItem(
-                  icon: Icons.upload_file,
-                  title: "Materials",
-                  context: context,
-                  onTap: () {}),
-              buildDrawerItem(
-                  icon: Icons.event,
-                  title: "Event Management",
-                  context: context,
-                  onTap: () {}),
-              buildDrawerItem(
-                  icon: Icons.support_agent,
-                  title: "Support Tickets",
-                  context: context,
-                  onTap: () {}),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => SalaryBankDetailsPage()));
+                  }),
+              /// =======================
+              ///Material Dropdown
+              /// =======================
+              Theme(
+                data: Theme.of(context).copyWith(
+                  dividerColor: Colors.transparent,
+                ),
+                child: ExpansionTile(
+                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  title: const Text(
+                    "Material ",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  trailing: Icon(
+                    isLibraryExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ),
+                  initiallyExpanded: isLibraryExpanded,
+                  onExpansionChanged: (value) {
+                    setState(() {
+                      isLibraryExpanded = value;
+                    });
+                  },
+                  children: [
+
+                    /// Upload notes
+                    ListTile(
+                      leading: const Icon(Icons.book, color: Colors.white70),
+                      title: const Text(
+                        "Upload notes",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const StudyMaterialsPage()),
+                        );
+                      },
+                    ),
+
+                    /// Upload Assigment
+                    ListTile(
+                      leading: const Icon(Icons.menu_book_outlined,
+                          color: Colors.white70),
+                      title: const Text(
+                        "upload Assigment",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const Assigments()), // change if different page
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              /// =======================
+              ///Event MAnagment Dropdown
+              /// =======================
+              Theme(
+                data: Theme.of(context).copyWith(
+                  dividerColor: Colors.transparent,
+                ),
+                child: ExpansionTile(
+                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  title: const Text(
+                    "Event Managment",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  trailing: Icon(
+                    isLibraryExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ),
+                  initiallyExpanded: isLibraryExpanded,
+                  onExpansionChanged: (value) {
+                    setState(() {
+                      isLibraryExpanded = value;
+                    });
+                  },
+                  children: [
+
+                    /// Event list
+                    ListTile(
+                      leading: const Icon(Icons.book, color: Colors.white70),
+                      title: const Text(
+                        "Event List",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ManageEventsPage()),
+                        );
+                      },
+                    ),
+
+                    /// registerd event
+                    ListTile(
+                      leading: const Icon(Icons.menu_book_outlined,
+                          color: Colors.white70),
+                      title: const Text(
+                        "Registerd Event",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const MyRegisteredEventsPage()), // change if different page
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+              /// =======================
+              /// Support ticek Dropdown
+              /// =======================
+              Theme(
+                data: Theme.of(context).copyWith(
+                  dividerColor: Colors.transparent,
+                ),
+                child: ExpansionTile(
+                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  title: const Text(
+                    "Support Tikect",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  trailing: Icon(
+                    isLibraryExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ),
+                  initiallyExpanded: isLibraryExpanded,
+                  onExpansionChanged: (value) {
+                    setState(() {
+                      isLibraryExpanded = value;
+                    });
+                  },
+                  children: [
+
+                    ///  My tiket
+                    ListTile(
+                      leading: const Icon(Icons.book, color: Colors.white70),
+                      title: const Text(
+                        "My Tikect",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const yoursupportticket()),
+                        );
+                      },
+                    ),
+                    /// create ticket
+                    ListTile(
+                      leading: const Icon(Icons.book, color: Colors.white70),
+                      title: const Text(
+                        "Create  Tikect",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const CreateSupportTicketPage()),
+                        );
+                      },
+                    ),
+
+                    ///  Assigned ticket
+                    ListTile(
+                      leading: const Icon(Icons.menu_book_outlined,
+                          color: Colors.white70),
+                      title: const Text(
+                        "Assigned Tikects",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const AssignedTickets()), // change if different page
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
             ],
           ),
         ),
