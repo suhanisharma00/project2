@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:project2/pages/%C2%A0MyRegisteredEvents.dart';
+import 'package:project2/pages/ MyRegisteredEvents.dart';
 import 'package:project2/pages/salarybankdetails.dart';
 import 'package:project2/pages/studymaterial.dart';
 import 'package:project2/pages/yoursupportticket.dart';
 import 'AssignedTickets.dart';
 import 'ExploreEvents.dart';
 import 'assigment.dart';
+import 'classdetail.dart';
 import 'createnewsupportticket.dart';
 import 'examlist.dart';
 import 'librarybookpage.dart';
+import 'markattendence.dart';
+import 'mentoredsection.dart';
 import 'newclassschedule.dart';
 import 'virtual_id_card_page.dart';
-import 'quick_actions_page.dart';
 import 'profile_page.dart';
 import 'create_assignment_page.dart';
 import 'schedule_class_page.dart';
 import 'upload_material_page.dart';
-import 'classmanagement.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -28,14 +30,18 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  bool isSchedulesExpanded = false;
   bool isLibraryExpanded = false;
+  bool isExamExpanded = false;
+  bool isMaterialExpanded = false;
+  bool isEventExpanded = false;
+  bool isSupportExpanded = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: const Color(0xFF0B1220),
-//app bar
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: Container(
@@ -68,8 +74,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   style: TextStyle(color: Colors.black),
                 ),
               ),
-
-              ///  3 Dots Button
               IconButton(
                 icon: const Icon(Icons.more_vert, color: Colors.black),
                 onPressed: () {
@@ -80,15 +84,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
       ),
-
-      ///  WHATSAPP STYLE HALF DRAWER
       endDrawer: SizedBox(
         width: MediaQuery.of(context).size.width * 0.75,
         child: Drawer(
           backgroundColor: const Color(0xFF2C3E50),
           child: ListView(
             children: [
-
               const SizedBox(height: 40),
               const ListTile(
                 leading: CircleAvatar(
@@ -102,8 +103,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
               ),
               const Divider(color: Colors.white24),
-
-              /// Menu Items
               buildDrawerItem(
                   icon: Icons.home,
                   title: "Home",
@@ -117,43 +116,84 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfilePage()));
                   }),
-              buildDrawerItem(
-                  icon: Icons.class_,
-                  title: "Class Management",
-                  context: context,
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => ClassManagementPage()));
-                  }
-                  ),
-              /// =======================
-              /// "Schedules" Dropdown
-              /// =======================
               Theme(
                 data: Theme.of(context).copyWith(
                   dividerColor: Colors.transparent,
                 ),
                 child: ExpansionTile(
-                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  leading: const Icon(Icons.class_, color: Colors.white70),
+                  title: const Text(
+                    "Class Management",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  trailing: Icon(
+                    isSchedulesExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ),
+                  initiallyExpanded: isSchedulesExpanded,
+                  onExpansionChanged: (value) {
+                    setState(() {
+                      isSchedulesExpanded = value;
+                    });
+                  },
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.book, color: Colors.white70),
+                      title: const Text(
+                        "My Class",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const MentoredSectionsPage()),
+                        );
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.menu_book_outlined,
+                          color: Colors.white70),
+                      title: const Text(
+                        "All Class",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const ClassesDetailsPage()),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Theme(
+                data: Theme.of(context).copyWith(
+                  dividerColor: Colors.transparent,
+                ),
+                child: ExpansionTile(
+                  leading: const Icon(Icons.calendar_month, color: Colors.white70),
                   title: const Text(
                     "Schedules",
                     style: TextStyle(color: Colors.white),
                   ),
                   trailing: Icon(
-                    isLibraryExpanded
+                    isSchedulesExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: Colors.white,
                   ),
-                  initiallyExpanded: isLibraryExpanded,
+                  initiallyExpanded: isSchedulesExpanded,
                   onExpansionChanged: (value) {
                     setState(() {
-                      isLibraryExpanded = value;
+                      isSchedulesExpanded = value;
                     });
                   },
                   children: [
-
-                    /// "All Schedules"
                     ListTile(
                       leading: const Icon(Icons.book, color: Colors.white70),
                       title: const Text(
@@ -168,8 +208,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         );
                       },
                     ),
-
-                    /// "My Schedules"
                     ListTile(
                       leading: const Icon(Icons.menu_book_outlined,
                           color: Colors.white70),
@@ -181,14 +219,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const LibraryBooksPage()), // change if different page
+                          MaterialPageRoute(builder: (_) => const LibraryBooksPage()),
                         );
                       },
                     ),
                   ],
                 ),
               ),
-
               buildDrawerItem(
                   icon: Icons.school,
                   title: "Student Leave",
@@ -198,7 +235,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Navigator.push(context, MaterialPageRoute(builder: (_) => ScheduleClassPage()));
                   }
               ),
-
               Theme(
                 data: Theme.of(context).copyWith(
                   dividerColor: Colors.transparent,
@@ -222,8 +258,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     });
                   },
                   children: [
-
-                    /// 🔹 Available Books
                     ListTile(
                       leading: const Icon(Icons.book, color: Colors.white70),
                       title: const Text(
@@ -238,8 +272,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         );
                       },
                     ),
-
-                    /// Lending Books
                     ListTile(
                       leading: const Icon(Icons.menu_book_outlined,
                           color: Colors.white70),
@@ -251,42 +283,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const LibraryBooksPage()), // change if different page
+                          MaterialPageRoute(builder: (_) => const LibraryBooksPage()),
                         );
                       },
                     ),
                   ],
                 ),
               ),
-
-              /// =======================
-              /// Exam Dropdown
-              /// =======================
               Theme(
                 data: Theme.of(context).copyWith(
                   dividerColor: Colors.transparent,
                 ),
                 child: ExpansionTile(
-                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  leading: const Icon(Icons.edit_document, color: Colors.white70),
                   title: const Text(
                     "Exam",
                     style: TextStyle(color: Colors.white),
                   ),
                   trailing: Icon(
-                    isLibraryExpanded
+                    isExamExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: Colors.white,
                   ),
-                  initiallyExpanded: isLibraryExpanded,
+                  initiallyExpanded: isExamExpanded,
                   onExpansionChanged: (value) {
                     setState(() {
-                      isLibraryExpanded = value;
+                      isExamExpanded = value;
                     });
                   },
                   children: [
-
-                    /// Exam information
                     ListTile(
                       leading: const Icon(Icons.book, color: Colors.white70),
                       title: const Text(
@@ -301,8 +327,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         );
                       },
                     ),
-
-                    /// Mark entry
                     ListTile(
                       leading: const Icon(Icons.menu_book_outlined,
                           color: Colors.white70),
@@ -314,14 +338,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const Assigments()), // change if different page
+                          MaterialPageRoute(builder: (_) => const Assigments()),
                         );
                       },
                     ),
                   ],
                 ),
               ),
-
               buildDrawerItem(
                   icon: Icons.account_balance_wallet,
                   title: "Salary Info",
@@ -330,34 +353,29 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(builder: (_) => SalaryBankDetailsPage()));
                   }),
-              /// =======================
-              ///Material Dropdown
-              /// =======================
               Theme(
                 data: Theme.of(context).copyWith(
                   dividerColor: Colors.transparent,
                 ),
                 child: ExpansionTile(
-                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  leading: const Icon(Icons.upload_file, color: Colors.white70),
                   title: const Text(
                     "Material ",
                     style: TextStyle(color: Colors.white),
                   ),
                   trailing: Icon(
-                    isLibraryExpanded
+                    isMaterialExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: Colors.white,
                   ),
-                  initiallyExpanded: isLibraryExpanded,
+                  initiallyExpanded: isMaterialExpanded,
                   onExpansionChanged: (value) {
                     setState(() {
-                      isLibraryExpanded = value;
+                      isMaterialExpanded = value;
                     });
                   },
                   children: [
-
-                    /// Upload notes
                     ListTile(
                       leading: const Icon(Icons.book, color: Colors.white70),
                       title: const Text(
@@ -372,8 +390,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         );
                       },
                     ),
-
-                    /// Upload Assigment
                     ListTile(
                       leading: const Icon(Icons.menu_book_outlined,
                           color: Colors.white70),
@@ -385,42 +401,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const Assigments()), // change if different page
+                          MaterialPageRoute(builder: (_) => const Assigments()),
                         );
                       },
                     ),
                   ],
                 ),
               ),
-
-              /// =======================
-              ///Event MAnagment Dropdown
-              /// =======================
               Theme(
                 data: Theme.of(context).copyWith(
                   dividerColor: Colors.transparent,
                 ),
                 child: ExpansionTile(
-                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  leading: const Icon(Icons.event, color: Colors.white70),
                   title: const Text(
                     "Event Managment",
                     style: TextStyle(color: Colors.white),
                   ),
                   trailing: Icon(
-                    isLibraryExpanded
+                    isEventExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: Colors.white,
                   ),
-                  initiallyExpanded: isLibraryExpanded,
+                  initiallyExpanded: isEventExpanded,
                   onExpansionChanged: (value) {
                     setState(() {
-                      isLibraryExpanded = value;
+                      isEventExpanded = value;
                     });
                   },
                   children: [
-
-                    /// Event list
                     ListTile(
                       leading: const Icon(Icons.book, color: Colors.white70),
                       title: const Text(
@@ -435,8 +445,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         );
                       },
                     ),
-
-                    /// registerd event
                     ListTile(
                       leading: const Icon(Icons.menu_book_outlined,
                           color: Colors.white70),
@@ -448,42 +456,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const MyRegisteredEventsPage()), // change if different page
+                          MaterialPageRoute(builder: (_) => const MyRegisteredEventsPage()),
                         );
                       },
                     ),
                   ],
                 ),
               ),
-
-              /// =======================
-              /// Support ticek Dropdown
-              /// =======================
               Theme(
                 data: Theme.of(context).copyWith(
                   dividerColor: Colors.transparent,
                 ),
                 child: ExpansionTile(
-                  leading: const Icon(Icons.menu_book, color: Colors.white70),
+                  leading: const Icon(Icons.support_agent, color: Colors.white70),
                   title: const Text(
                     "Support Tikect",
                     style: TextStyle(color: Colors.white),
                   ),
                   trailing: Icon(
-                    isLibraryExpanded
+                    isSupportExpanded
                         ? Icons.keyboard_arrow_up
                         : Icons.keyboard_arrow_down,
                     color: Colors.white,
                   ),
-                  initiallyExpanded: isLibraryExpanded,
+                  initiallyExpanded: isSupportExpanded,
                   onExpansionChanged: (value) {
                     setState(() {
-                      isLibraryExpanded = value;
+                      isSupportExpanded = value;
                     });
                   },
                   children: [
-
-                    ///  My tiket
                     ListTile(
                       leading: const Icon(Icons.book, color: Colors.white70),
                       title: const Text(
@@ -498,7 +500,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         );
                       },
                     ),
-                    /// create ticket
                     ListTile(
                       leading: const Icon(Icons.book, color: Colors.white70),
                       title: const Text(
@@ -513,8 +514,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         );
                       },
                     ),
-
-                    ///  Assigned ticket
                     ListTile(
                       leading: const Icon(Icons.menu_book_outlined,
                           color: Colors.white70),
@@ -526,26 +525,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (_) => const AssignedTickets()), // change if different page
+                          MaterialPageRoute(builder: (_) => const AssignedTickets()),
                         );
                       },
                     ),
                   ],
                 ),
               ),
-
             ],
           ),
         ),
       ),
-
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// Header
               const Text(
                 "Welcome back, Devansh Mehra",
                 style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
@@ -556,8 +552,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 style: TextStyle(color: Colors.white70),
               ),
               const SizedBox(height: 15),
-
-              /// Buttons Row
               Row(
                 children: [
                   Expanded(
@@ -575,8 +569,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ),
                   const SizedBox(width: 10),
-
-                  /// Quick Actions Dropdown
                   PopupMenuButton<String>(
                     color: Colors.white,
                     onSelected: (value) {
@@ -637,10 +629,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   )
                 ],
               ),
-
               const SizedBox(height: 20),
-
-              /// 4 Small Cards
               GridView.count(
                 crossAxisCount: 2,
                 shrinkWrap: true,
@@ -654,10 +643,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   DashboardCard(title: "Study Materials", icon: Icons.menu_book),
                 ],
               ),
-
               const SizedBox(height: 20),
-
-              /// Today's Schedule
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -675,23 +661,202 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: 5),
                     const Text("15:00:00 - 16:00:00", style: TextStyle(color: Colors.white70)),
                     const SizedBox(height: 15),
-
-                    /// Mark Attendance Button
                     Align(
                       alignment: Alignment.centerRight,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const MarkAttendancePage()),
+                          );
+                        },
                         child: const Text("MARK ATTENDANCE"),
                       ),
                     )
                   ],
                 ),
               ),
-
               const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2A5A),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text("Assignments",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10),
+                    StatusTile(
+                      title: "Assignment 2",
+                      subtitle: "Due: 2025-11-15",
+                      status: "Active",
+                    ),
+                    StatusTile(
+                      title: "Assignment 1",
+                      subtitle: "Due: 2025-11-30",
+                      status: "Active",
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2A5A),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text("Active Exams",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10),
+                    StatusTile(
+                      title: "Mid Term Examination II 2025",
+                      subtitle: "Written",
+                      status: "Active",
+                    ),
+                    StatusTile(
+                      title: "Mid Term Examination 2025",
+                      subtitle: "Written",
+                      status: "Active",
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2A5A),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("My Salary",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold)),
+                    SizedBox(height: 15),
+                    Center(
+                      child: Column(
+                        children: [
+                          Text("₹50,000.00",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold)),
+                          Text("Last paid: September 2025",
+                              style: TextStyle(color: Colors.white70)),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text("Status: Paid", style: TextStyle(color: Colors.white70)),
+                    Text("Payment Date: 09 Oct 2025",
+                        style: TextStyle(color: Colors.white70)),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2A5A),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Upcoming Events",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold)),
+                    SizedBox(height: 20),
+                    Center(
+                      child: Column(
+                        children: [
+                          Icon(Icons.event_busy,
+                              size: 40, color: Colors.white54),
+                          SizedBox(height: 10),
+                          Text("No upcoming events.",
+                              style: TextStyle(color: Colors.white70)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2A5A),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Support Tickets",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10),
+                    StatusTile(
+                      title: "Classroom Technology Malfunction",
+                      subtitle: "Open",
+                      status: "Open",
+                    ),
+                    StatusTile(
+                      title: "Issue with Fee Payment Portal",
+                      subtitle: "Open",
+                      status: "Open",
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1E2A5A),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Leave Requests",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold)),
+                    SizedBox(height: 10),
+                    StatusTile(
+                      title: "Aarav Mehta",
+                      subtitle: "I Have a Plan",
+                      status: "Pending",
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -736,3 +901,63 @@ class DashboardCard extends StatelessWidget {
     );
   }
 }
+
+class StatusTile extends StatelessWidget {
+  final String title;
+  final String subtitle;
+  final String status;
+
+  const StatusTile({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.status,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
+                const SizedBox(height: 2),
+                Text(subtitle, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: _getStatusColor(status).withOpacity(0.2),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              status,
+              style: TextStyle(color: _getStatusColor(status), fontSize: 10, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Color _getStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'active':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'open':
+        return Colors.blue;
+      default:
+        return Colors.grey;
+    }
+  }
+}
+
