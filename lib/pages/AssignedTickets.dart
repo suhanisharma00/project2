@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../ticket.dart';
+import 'ticket.dart';
 
 class AssignedTickets extends StatelessWidget {
   const AssignedTickets({super.key});
