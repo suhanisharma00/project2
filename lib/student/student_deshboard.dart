@@ -328,6 +328,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
                         style: TextStyle(color: Colors.white),
                       ),
                       onTap: () {
+
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (context) => const ExamSchedulePage()),
