@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'pages/dashboard_page.dart';
+import 'student/student_deshboard.dart';
+import 'counselor/counselor_deshboard.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Poppins',
         scaffoldBackgroundColor: const Color(0xFF0B1230),
       ),
-      home: const DashboardScreen(),
+      home: const CounslorDeshboardPage(),
     );
   }
 }
