@@ -1,22 +1,17 @@
 import 'package:flutter/material.dart';
-import 'Super_Admin_Profile.dart';
+import 'Financial_dashboard.dart';
 import 'insitute_managment/institude_list.dart';
-import 'insitute_managment/Add_institude.dart';
 import 'Moderators_Managment/Moderate_list.dart';
-import 'Moderators_Managment/Add_moderators.dart';
 import 'system_logs/audit_logs.dart';
-import 'system_logs/database_logs.dart';
-import 'testimonials.dart';
-import 'FAQ\'s.dart';
-import 'customer_contact.dart';
-import 'privacy_policy.dart';
-import 'cancellation_policy.dart';
 
 class SuperAdminDashboard extends StatelessWidget {
   const SuperAdminDashboard({super.key});
 
-  static const Color primaryBg = Color(0xFF0D1127);
-  static const Color cardBg = Color(0xFF1C223D);
+  static const Color primaryBg = Color(0xFF070B1D);
+  static const Color cardBg = Color(0xFF11172D);
+  static const Color accentBlue = Color(0xFF2196F3);
+  static const Color successGreen = Color(0xFF4CAF50);
+  static const Color criticalRed = Color(0xFFF44336);
 
   void _navigateTo(BuildContext context, Widget screen) {
     Navigator.push(context, MaterialPageRoute(builder: (context) => screen));
@@ -27,209 +22,163 @@ class SuperAdminDashboard extends StatelessWidget {
     return Scaffold(
       backgroundColor: primaryBg,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: cardBg,
         elevation: 0,
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
-            Text("Super Admin Dashboard 🌐", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18)),
-            Text("Complete platform oversight and management control", style: TextStyle(color: Colors.white70, fontSize: 12)),
+        title: Row(
+          children: [
+            const Text("Eduphin / ", style: TextStyle(color: Colors.white54, fontSize: 14)),
+            const Text("Super Admin", style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+            const Spacer(),
+            _buildStatusIndicator("ALL SYSTEMS LIVE", successGreen),
+            const SizedBox(width: 12),
+            const Icon(Icons.notifications_none, color: Colors.white70, size: 20),
           ],
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionTitle("⚡ Quick Actions"),
-            _buildQuickActions(context),
-            const SizedBox(height: 20),
-            _buildSectionTitle("📊 Key Metrics"),
-            _buildStatsGrid(context),
-            const SizedBox(height: 20),
-            _buildSectionTitle("👤 Profile"),
-            _buildProfileOverview(context),
-            const SizedBox(height: 20),
-            _buildSectionTitle("🏫 Institute Management"),
-            _buildNavigationCard(context, "Institute List", Icons.list, const InstituteListScreen()),
-            _buildNavigationCard(context, "Add Institute", Icons.add_business, const AddInstituteScreen()),
-            const SizedBox(height: 20),
-            _buildSectionTitle("👥 Moderators Management"),
-            _buildNavigationCard(context, "Moderate List", Icons.people_outline, const ModeratorListScreen()),
-            _buildNavigationCard(context, "Add Moderate", Icons.person_add_alt, const AddModeratorScreen()),
-            const SizedBox(height: 20),
-            _buildSectionTitle("📂 System Logs"),
-            _buildNavigationCard(context, "Audit Logs", Icons.history, const AuditLogsScreen()),
-            _buildNavigationCard(context, "Database Logs", Icons.storage, const DatabaseLogsScreen()),
-            const SizedBox(height: 20),
-            _buildSectionTitle("📜 Policies & Support"),
-            _buildPolicyGrid(context),
-            const SizedBox(height: 40),
+            _buildHeader(),
+            const SizedBox(height: 24),
+            _buildMetricsGrid(),
+            const SizedBox(height: 24),
+            _buildSectionTitle("Main Modules"),
+            _buildModuleGrid(context),
+            const SizedBox(height: 24),
+            _buildSectionTitle("System Health"),
+            _buildSystemHealthCard(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12.0, left: 4),
-      child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-    );
-  }
-
-  Widget _buildQuickActions(BuildContext context) {
+  Widget _buildStatusIndicator(String label, Color color) {
     return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12)),
-      child: Column(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(4), border: Border.all(color: color.withOpacity(0.3))),
+      child: Row(
         children: [
-          _buildActionButton(Icons.person_add, "ADD MODERATORS", () => _navigateTo(context, const AddModeratorScreen())),
-          const SizedBox(height: 8),
-          _buildActionButton(Icons.business, "ADD INSTITUTES", () => _navigateTo(context, const AddInstituteScreen())),
-          const SizedBox(height: 8),
-          _buildActionButton(Icons.rate_review, "ADD TESTIMONIALS", () => _navigateTo(context, const AddTestimonialScreen())),
+          CircleAvatar(radius: 3, backgroundColor: color),
+          const SizedBox(width: 6),
+          Text(label, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
         ],
       ),
     );
   }
 
-  Widget _buildActionButton(IconData icon, String label, VoidCallback onTap) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: onTap,
-        icon: Icon(icon, size: 18, color: Colors.white),
-        label: Text(label, style: const TextStyle(color: Colors.white, fontSize: 13)),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF2B3354),
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStatsGrid(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
-      childAspectRatio: 1.4,
+  Widget _buildHeader() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildStatCard(context, Icons.group, "29", "Total Accounts", const ModeratorListScreen()),
-        _buildStatCard(context, Icons.apartment, "2", "Active Institutes", const InstituteListScreen()),
-        _buildStatCard(context, Icons.school, "10", "Total Students", const InstituteListScreen()),
-        _buildStatCard(context, Icons.class_, "123", "Classes/Sections", const InstituteListScreen()),
+        const Text("Platform Overview", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+        const Text("Real-time management and system monitoring dashboard.", style: TextStyle(color: Colors.white54, fontSize: 12)),
       ],
     );
   }
 
-  Widget _buildStatCard(BuildContext context, IconData icon, String value, String label, Widget target) {
-    return InkWell(
-      onTap: () => _navigateTo(context, target),
-      child: Container(
-        decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.white70, size: 24),
-            const SizedBox(height: 4),
-            Text(value, style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-            Text(label, style: const TextStyle(color: Colors.white60, fontSize: 11)),
-          ],
-        ),
-      ),
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Text(title, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
     );
   }
 
-  Widget _buildProfileOverview(BuildContext context) {
-    return InkWell(
-      onTap: () => _navigateTo(context, const ManageProfileScreen()),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12)),
-        child: Row(
-          children: [
-            const CircleAvatar(
-              radius: 30,
-              backgroundColor: Colors.grey,
-              child: Icon(Icons.person, size: 40, color: Colors.white),
-            ),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text("Umang Goyal", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-                Text("Super Admin", style: TextStyle(color: Colors.white70, fontSize: 13)),
-                Text("View Profile Details", style: TextStyle(color: Colors.blueAccent, fontSize: 11)),
-              ],
-            ),
-            const Spacer(),
-            const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 16),
-          ],
-        ),
-      ),
+  Widget _buildMetricsGrid() {
+    return GridView.count(
+      crossAxisCount: 2,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      mainAxisSpacing: 16,
+      crossAxisSpacing: 16,
+      childAspectRatio: 2,
+      children: [
+        _buildMetricCard("Total Institutes", "12", Icons.business, accentBlue),
+        _buildMetricCard("Active Users", "1.2K", Icons.people, successGreen),
+        _buildMetricCard("System Logs", "450", Icons.history, Colors.orange),
+        _buildMetricCard("Revenue (MTD)", "₹4.5L", Icons.payments, Colors.purple),
+      ],
     );
   }
 
-  Widget _buildNavigationCard(BuildContext context, String title, IconData icon, Widget screen) {
+  Widget _buildMetricCard(String title, String value, IconData icon, Color color) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12)),
-      child: ListTile(
-        onTap: () => _navigateTo(context, screen),
-        leading: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), borderRadius: BorderRadius.circular(8)),
-          child: Icon(icon, color: Colors.white70, size: 20),
-        ),
-        title: Text(title, style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w500)),
-        trailing: const Icon(Icons.arrow_forward_ios, color: Colors.white24, size: 14),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12), border: Border(left: BorderSide(color: color, width: 4))),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 20),
+          const SizedBox(height: 8),
+          Text(value, style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+          Text(title, style: const TextStyle(color: Colors.white54, fontSize: 10)),
+        ],
       ),
     );
   }
 
-  Widget _buildPolicyGrid(BuildContext context) {
-    final List<Map<String, dynamic>> items = [
-      {"name": "Testimonials", "icon": Icons.rate_review, "screen": const TestimonialsManagementScreen()},
-      {"name": "Customer Contact", "icon": Icons.contact_mail, "screen": const CustomerContactScreen()},
-      {"name": "Privacy Policy", "icon": Icons.privacy_tip, "screen": const PrivacyPolicyScreen()},
-      {"name": "Cancellation Policy", "icon": Icons.cancel, "screen": const CancellationPolicyScreen()},
-      {"name": "Terms of Service", "icon": Icons.description, "screen": const PrivacyPolicyScreen()},
-      {"name": "FAQ's", "icon": Icons.help, "screen": const FAQManagementScreen()},
+  Widget _buildModuleGrid(BuildContext context) {
+    final List<Map<String, dynamic>> modules = [
+      {"title": "Institute Mgmt", "icon": Icons.apartment, "color": Colors.teal, "screen": const InstituteListScreen()},
+      {"title": "Moderator Mgmt", "icon": Icons.security, "color": Colors.indigo, "screen": const ModeratorListScreen()},
+      {"title": "Financial Overview", "icon": Icons.account_balance, "color": Colors.amber, "screen": const FinancialDashboard()},
+      {"title": "Audit Logs", "icon": Icons.analytics, "color": Colors.redAccent, "screen": const AuditLogsScreen()},
     ];
 
     return GridView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 10,
-        crossAxisSpacing: 10,
-        childAspectRatio: 2.2,
-      ),
-      itemCount: items.length,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2, mainAxisSpacing: 12, crossAxisSpacing: 12, childAspectRatio: 1.3),
+      itemCount: modules.length,
       itemBuilder: (context, index) {
         return InkWell(
-          onTap: () => _navigateTo(context, items[index]['screen']),
+          onTap: () => _navigateTo(context, modules[index]['screen']),
           child: Container(
-            decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12)),
-            child: Row(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.white10)),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(items[index]['icon'], color: Colors.white70, size: 18),
-                const SizedBox(width: 8),
-                Flexible(child: Text(items[index]['name'], style: const TextStyle(color: Colors.white, fontSize: 11), overflow: TextOverflow.ellipsis)),
+                CircleAvatar(backgroundColor: modules[index]['color'].withOpacity(0.1), child: Icon(modules[index]['icon'], color: modules[index]['color'])),
+                const SizedBox(height: 12),
+                Text(modules[index]['title'], style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
               ],
             ),
           ),
         );
       },
+    );
+  }
+
+  Widget _buildSystemHealthCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(color: successGreen.withOpacity(0.05), borderRadius: BorderRadius.circular(12), border: Border.all(color: successGreen.withOpacity(0.2))),
+      child: Column(
+        children: [
+          _buildHealthRow("Database Connection", "Stable", successGreen),
+          const Divider(color: Colors.white10),
+          _buildHealthRow("API Response Time", "120ms", Colors.blue),
+          const Divider(color: Colors.white10),
+          _buildHealthRow("Storage Usage", "45%", Colors.orange),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHealthRow(String label, String status, Color color) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(color: Colors.white70, fontSize: 12)),
+          Text(status, style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.bold)),
+        ],
+      ),
     );
   }
 }

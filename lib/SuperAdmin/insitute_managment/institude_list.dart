@@ -3,223 +3,114 @@ import 'package:flutter/material.dart';
 class InstituteListScreen extends StatelessWidget {
   const InstituteListScreen({super.key});
 
+  static const Color primaryBg = Color(0xFF070B1D);
+  static const Color cardBg = Color(0xFF11172D);
+  static const Color accentBlue = Color(0xFF2196F3);
+  static const Color successGreen = Color(0xFF4CAF50);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1127),
+      backgroundColor: primaryBg,
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: cardBg,
         elevation: 0,
-        title: const Text("🏫 Institutes Overview", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+        title: const Text("Institute Directory", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
         actions: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ElevatedButton.icon(
-              onPressed: () {},
-              icon: const Icon(Icons.add_circle_outline, size: 16),
-              label: const Text("Add New Institute", style: TextStyle(fontSize: 12)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2B3354),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              ),
-            ),
-          ),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.add_business, color: accentBlue)),
         ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            _buildFilterSection(),
+            _buildFilterCard(),
             const SizedBox(height: 20),
-            _buildInstituteDirectory(),
+            _buildInstituteTable(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildFilterSection() {
+  Widget _buildFilterCard() {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: const Color(0xFF1C223D), borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12), border: Border.all(color: Colors.white10)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          const Text("Filter Institutes", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 16),
+          Row(
             children: [
-              Icon(Icons.filter_alt, color: Colors.white, size: 20),
-              SizedBox(width: 8),
-              Text("Filter Institutes", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+              Expanded(child: _buildDropdown("City")),
+              const SizedBox(width: 12),
+              Expanded(child: _buildDropdown("State")),
             ],
           ),
-          const SizedBox(height: 16),
-          _buildDropdownFilter("Filter by City"),
-          _buildDropdownFilter("Filter by State"),
-          _buildDropdownFilter("Filter by Status"),
           const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF454D66)),
-              child: const Text("RESET FILTERS", style: TextStyle(color: Colors.white70)),
-            ),
-          ),
+          _buildDropdown("Status"),
         ],
       ),
     );
   }
 
-  Widget _buildDropdownFilter(String label) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label, style: const TextStyle(color: Colors.white, fontSize: 13)),
-          const SizedBox(height: 6),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(color: const Color(0xFF2B3354), borderRadius: BorderRadius.circular(8)),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                isExpanded: true,
-                hint: const Text("Select an option", style: TextStyle(color: Colors.white38, fontSize: 13)),
-                dropdownColor: const Color(0xFF2B3354),
-                items: [],
-                onChanged: (v) {},
-              ),
-            ),
-          ),
-        ],
+  Widget _buildDropdown(String hint) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(color: Colors.white.withOpacity(0.05), borderRadius: BorderRadius.circular(8)),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          isExpanded: true,
+          hint: Text(hint, style: const TextStyle(color: Colors.white38, fontSize: 13)),
+          dropdownColor: cardBg,
+          items: [],
+          onChanged: (v) {},
+        ),
       ),
     );
   }
 
-  Widget _buildInstituteDirectory() {
+  Widget _buildInstituteTable() {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(color: const Color(0xFF1C223D), borderRadius: BorderRadius.circular(12)),
+      decoration: BoxDecoration(color: cardBg, borderRadius: BorderRadius.circular(12)),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
-            children: [
-              Icon(Icons.list, color: Colors.white, size: 20),
-              SizedBox(width: 8),
-              Text("Institute Directory", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-            ],
-          ),
-          const Text("Manage all registered institutes within the system.", style: TextStyle(color: Colors.white60, fontSize: 12)),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              _buildExportButton(Icons.description, const Color(0xFF4CAF50).withOpacity(0.5), "CSV"),
-              const SizedBox(width: 8),
-              _buildExportButton(Icons.print, const Color(0xFF388E3C), "XLS"),
-              const SizedBox(width: 8),
-              _buildExportButton(Icons.picture_as_pdf, const Color(0xFFD32F2F), "PDF"),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Row(
-            children: [
-              const Text("show entries", style: TextStyle(color: Colors.white, fontSize: 12)),
-              const SizedBox(width: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                decoration: BoxDecoration(color: const Color(0xFF2B3354), borderRadius: BorderRadius.circular(4)),
-                child: const Text("10", style: TextStyle(color: Colors.white)),
-              ),
-              const Spacer(),
-              const Text("Search", style: TextStyle(color: Colors.white, fontSize: 12)),
-              const SizedBox(width: 8),
-              Container(
-                width: 100,
-                height: 30,
-                decoration: BoxDecoration(color: const Color(0xFF2B3354), borderRadius: BorderRadius.circular(4)),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: _buildTable(),
-          ),
+          _buildInstituteRow("1", "Indian Institute of Applied Sciences", "IIAS-001", "Active"),
+          const Divider(color: Colors.white10),
+          _buildInstituteRow("2", "Shree Aryavart Institute", "SAITM-2026", "Active"),
         ],
       ),
     );
   }
 
-  Widget _buildExportButton(IconData icon, Color color, String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
-      child: Column(
+  Widget _buildInstituteRow(String id, String name, String code, String status) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Row(
         children: [
-          Icon(icon, color: Colors.white, size: 18),
-          Text(label, style: const TextStyle(color: Colors.white, fontSize: 8)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTable() {
-    return DataTable(
-      columnSpacing: 20,
-      headingRowColor: MaterialStateProperty.all(const Color(0xFF2B3354)),
-      columns: const [
-        DataColumn(label: Text("#", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-        DataColumn(label: Text("Name", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-        DataColumn(label: Text("Code", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-        DataColumn(label: Text("City", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-        DataColumn(label: Text("State", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-        DataColumn(label: Text("Status", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-        DataColumn(label: Text("Actions", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-      ],
-      rows: [
-        _buildDataRow("1", "Indian Institute of Applied Sciences (IIAS)", "IIAS-MOCK-001", "Delhi", "New Delhi", "Active"),
-        _buildDataRow("2", "Shree Aryavart Institute of Technology", "SAITM2026", "Noida", "Uttar Pradesh", "Active"),
-      ],
-    );
-  }
-
-  DataRow _buildDataRow(String id, String name, String code, String city, String state, String status) {
-    return DataRow(
-      cells: [
-        DataCell(Text(id, style: const TextStyle(color: Colors.white70))),
-        DataCell(SizedBox(width: 150, child: Text(name, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)))),
-        DataCell(Text(code, style: const TextStyle(color: Colors.white70, fontSize: 12))),
-        DataCell(Text(city, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold))),
-        DataCell(Text(state, style: const TextStyle(color: Colors.white70))),
-        DataCell(
+          Text(id, style: const TextStyle(color: Colors.white38, fontSize: 12)),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(name, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold)),
+                Text(code, style: const TextStyle(color: Colors.white38, fontSize: 11)),
+              ],
+            ),
+          ),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: Colors.green.shade800, borderRadius: BorderRadius.circular(4)),
-            child: Text(status, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(color: successGreen.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+            child: Text(status, style: const TextStyle(color: successGreen, fontSize: 9, fontWeight: FontWeight.bold)),
           ),
-        ),
-        DataCell(
-          Row(
-            children: [
-              _buildActionIcon(Icons.visibility, Colors.cyan.shade600),
-              const SizedBox(width: 4),
-              _buildActionIcon(Icons.edit, Colors.orange.shade600),
-              const SizedBox(width: 4),
-              _buildActionIcon(Icons.delete, Colors.red.shade600),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildActionIcon(IconData icon, Color color) {
-    return Container(
-      padding: const EdgeInsets.all(4),
-      decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
-      child: Icon(icon, color: Colors.white, size: 14),
+          const SizedBox(width: 12),
+          const Icon(Icons.more_vert, color: Colors.white24, size: 18),
+        ],
+      ),
     );
   }
 }
